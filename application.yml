@@ -1,0 +1,24 @@
+server:
+  port: 33400
+
+general:
+  kafka-topic: transactions
+
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: midas-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # Use the Spring Kafka JsonDeserializer so messages are deserialized to Transaction
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        # Trust the package that contains your Transaction class (or use '*' to trust all)
+        'spring.json.trusted.packages': 'com.jpmc.midascore.foundation'
+        # Optionally set the default target type for value deserialization
+        'spring.json.value.default.type': 'com.jpmc.midascore.foundation.Transaction'
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # Use JsonSerializer to serialize Transaction objects to JSON when producing
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
